@@ -1,0 +1,30 @@
+# configs/eval.yaml
+# ------------------
+# Evaluation-only configuration.
+# Extends baseline.yaml — override only what differs.
+
+run:
+  id_prefix: "eval"
+  seed: 42
+
+paths:
+  manifest: "inputs/manifest.jsonl"
+  outputs_root: "outputs"
+
+data:
+  resize: null   # evaluate at original resolution
+
+interpolator:
+  name: "blend"
+  factor: 2
+
+stabilizer:
+  name: "none"
+
+eval:
+  temporal: true
+  identity: true
+  quality: true
+  # Set gt_frames_root to a directory of ground-truth frames if available.
+  # When set, PSNR and SSIM will be computed.
+  gt_frames_root: null

@@ -1,0 +1,39 @@
+# configs/baseline.yaml
+# ---------------------
+# Baseline configuration for the Temporal Hallucinations pipeline.
+# All pipeline stages share this config file.
+
+run:
+  id_prefix: "run"   # prepended to auto-generated run IDs
+  seed: 42
+
+paths:
+  manifest: "inputs/manifest.jsonl"
+  outputs_root: "outputs"
+
+data:
+  # Optional resize applied during the prepare stage.
+  # Set to null to keep original resolution.
+  resize:
+    width: 256
+    height: 256
+
+interpolator:
+  # Name of the interpolator class to use.
+  # "blend" = BlendInterpolator (CPU-safe linear-blend baseline).
+  # See PROMPT_ADD_INTERPOLATOR in src/comic_baba/constants.py to add RIFE/FILM.
+  name: "blend"
+  factor: 2            # temporal up-sampling factor (2 = 2× FPS)
+  duplicate_boundary: false
+
+stabilizer:
+  # "none"               = PassthroughStabilizer (no-op)
+  # "temporal_smoothing" = TemporalSmoothingStabilizer (placeholder)
+  # "identity_lock"      = IdentityLockStabilizer (placeholder)
+  name: "none"
+
+eval:
+  # Metrics to compute during the evaluation stage.
+  temporal: true
+  identity: true
+  quality: true
