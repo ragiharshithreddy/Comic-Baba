@@ -35,6 +35,7 @@ class ComicClipDataset:
         frames_root: str | Path | None = None,
         resize: tuple[int, int] | None = None,
         split: str | None = None,
+        transforms: list | None = None,
     ) -> None:
         """
         Parameters
@@ -48,11 +49,14 @@ class ComicClipDataset:
             Optional (width, height) to resize every frame.
         split:
             If set, only yield clips whose `split` field matches.
+        transforms:
+            Optional list of transform functions to apply to each frame.
         """
         self.manifest_path = Path(manifest_path)
         self.frames_root = Path(frames_root) if frames_root else self.manifest_path.parent.parent
         self.resize = resize
         self.split = split
+        self.transforms = transforms or []
 
     def __iter__(self) -> Iterator[dict]:
         for entry in iter_manifest(self.manifest_path):
@@ -62,6 +66,15 @@ class ComicClipDataset:
             if self.resize:
                 w, h = self.resize
                 frames = [resize_frame(f, w, h) for f in frames]
+
+            if self.transforms:
+                applied_frames = []
+                for f in frames:
+                    for t in self.transforms:
+                        f = t(f)
+                    applied_frames.append(f)
+                frames = applied_frames
+
             yield {
                 "clip_id": entry["clip_id"],
                 "frames": frames,
