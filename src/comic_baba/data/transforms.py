@@ -39,3 +39,26 @@ def normalize_float(frame: np.ndarray) -> np.ndarray:
 def denormalize_uint8(frame: np.ndarray) -> np.ndarray:
     """Convert float32 [0,1] → uint8 [0,255] (clamped)."""
     return np.clip(frame * 255.0, 0, 255).astype(np.uint8)
+
+
+def random_horizontal_flip(frame: np.ndarray, p: float = 0.5) -> np.ndarray:
+    """Randomly flip the frame horizontally with probability p."""
+    if np.random.random() < p:
+        return np.ascontiguousarray(frame[:, ::-1, :])
+    return frame
+
+
+def color_jitter(frame: np.ndarray, brightness: float = 0.1, contrast: float = 0.1) -> np.ndarray:
+    """Apply simple color jitter (brightness and contrast) to the frame."""
+    img = Image.fromarray(frame)
+    from PIL import ImageEnhance
+
+    if brightness > 0:
+        factor = np.random.uniform(max(0, 1 - brightness), 1 + brightness)
+        img = ImageEnhance.Brightness(img).enhance(factor)
+
+    if contrast > 0:
+        factor = np.random.uniform(max(0, 1 - contrast), 1 + contrast)
+        img = ImageEnhance.Contrast(img).enhance(factor)
+
+    return np.array(img)

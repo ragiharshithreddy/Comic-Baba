@@ -2,8 +2,9 @@
 
 from comic_baba.models.interpolators.base import BaseInterpolator
 from comic_baba.models.interpolators.baseline_blend import BlendInterpolator
+from comic_baba.models.interpolators.rife import RIFEInterpolator
 
-__all__ = ["BaseInterpolator", "BlendInterpolator"]
+__all__ = ["BaseInterpolator", "BlendInterpolator", "RIFEInterpolator"]
 
 
 def get_interpolator(name: str, **kwargs) -> "BaseInterpolator":
@@ -13,6 +14,7 @@ def get_interpolator(name: str, **kwargs) -> "BaseInterpolator":
     Supported names
     ---------------
     "blend"   — BlendInterpolator (CPU-safe baseline, no external weights)
+    "rife"    — RIFEInterpolator (requires torch)
 
     EXTENSION POINT
     ---------------
@@ -22,6 +24,7 @@ def get_interpolator(name: str, **kwargs) -> "BaseInterpolator":
     """
     registry: dict[str, type] = {
         "blend": BlendInterpolator,
+        "rife": RIFEInterpolator,
     }
     if name not in registry:
         raise ValueError(

@@ -14,6 +14,11 @@ dependencies = [
     "Pillow>=10.0",
     "pyyaml>=6.0",
     "click>=8.1",
+    "torch>=2.0",
+    "torchvision",
+    "gradio",
+    "tqdm",
+    "transformers",
 ]
 
 [project.optional-dependencies]
